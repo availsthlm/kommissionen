@@ -1,13 +1,18 @@
 import { useChatStore } from "@/lib/store";
 import ReactMarkdown from "react-markdown";
 import { TypingIndicator } from "./typing-indicator";
+import { WelcomeScreen } from "./welcome-screen";
 
 export function ChatMessages() {
   const messages = useChatStore((state) => state.messages);
   const isTyping = useChatStore((state) => state.isTyping);
 
+  if (messages.length === 0) {
+    return <WelcomeScreen />;
+  }
+
   return (
-    <div className="mt-8 mb-8 space-y-4">
+    <div className="w-full space-y-4">
       {messages.map((message) => (
         <div
           key={message.id}
@@ -28,14 +33,12 @@ export function ChatMessages() {
               <ReactMarkdown
                 className="prose prose-sm dark:prose-invert max-w-none"
                 components={{
-                  // Ensure code blocks are properly styled
-                  pre: ({ node, ...props }) => (
+                  pre: ({ ...props }) => (
                     <pre className="bg-muted-foreground/10 p-2 rounded-lg overflow-x-auto">
                       {props.children}
                     </pre>
                   ),
-                  // Style inline code
-                  code: ({ node, ...props }) => (
+                  code: ({ ...props }) => (
                     <code className="bg-muted-foreground/10 rounded px-1">
                       {props.children}
                     </code>
