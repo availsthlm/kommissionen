@@ -7,7 +7,7 @@ export function ChatMessages() {
   const isTyping = useChatStore((state) => state.isTyping);
 
   return (
-    <div className="space-y-4">
+    <div className="mt-8 mb-8 space-y-4">
       {messages.map((message) => (
         <div
           key={message.id}
