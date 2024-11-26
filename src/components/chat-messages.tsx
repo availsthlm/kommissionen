@@ -1,7 +1,9 @@
 import { useChatStore } from "@/lib/store";
+import { TypingIndicator } from "./typing-indicator";
 
 export function ChatMessages() {
   const messages = useChatStore((state) => state.messages);
+  const isTyping = useChatStore((state) => state.isTyping);
 
   return (
     <div className="space-y-4">
@@ -23,6 +25,7 @@ export function ChatMessages() {
           </div>
         </div>
       ))}
+      {isTyping && <TypingIndicator />}
     </div>
   );
 }

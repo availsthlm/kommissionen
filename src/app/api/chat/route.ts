@@ -8,8 +8,6 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
-
-    // Create a thread if it's the first message
     const thread = await openai.beta.threads.create();
 
     // Add the message to the thread
@@ -23,18 +21,53 @@ export async function POST(req: Request) {
       assistant_id: process.env.ASSISTANT_ID!,
     });
 
-    // Wait for the completion
-    let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-    while (runStatus.status !== "completed") {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-    }
+    // Create a new ReadableStream
+    const stream = new ReadableStream({
+      async start(controller) {
+        let runStatus = await openai.beta.threads.runs.retrieve(
+          thread.id,
+          run.id
+        );
 
-    // Get the messages
-    const messages = await openai.beta.threads.messages.list(thread.id);
+        while (runStatus.status !== "completed") {
+          if (runStatus.status === "failed") {
+            controller.error("Run failed");
+            break;
+          }
 
-    return NextResponse.json({
-      response: messages.data[0].content[0].text.value,
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          runStatus = await openai.beta.threads.runs.retrieve(
+            thread.id,
+            run.id
+          );
+        }
+
+        // Once completed, get the messages
+        const messages = await openai.beta.threads.messages.list(thread.id);
+        const lastMessage = messages.data[0];
+
+        if (lastMessage.role === "assistant") {
+          const content = lastMessage.content[0];
+          if (content.type === "text") {
+            // Split the message into words and stream each chunk
+            const words = content.text.value.split(" ");
+            for (const word of words) {
+              const chunk = new TextEncoder().encode(word + " ");
+              controller.enqueue(chunk);
+              // Add a small delay between words for a more natural effect
+              await new Promise((resolve) => setTimeout(resolve, 50));
+            }
+          }
+        }
+
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+      },
     });
   } catch (error) {
     console.error(error);
