@@ -1,4 +1,5 @@
 import { useChatStore } from "@/lib/store";
+import ReactMarkdown from "react-markdown";
 import { TypingIndicator } from "./typing-indicator";
 
 export function ChatMessages() {
@@ -21,7 +22,29 @@ export function ChatMessages() {
                 : "bg-muted"
             }`}
           >
-            <p>{message.content}</p>
+            {message.role === "user" ? (
+              <p>{message.content}</p>
+            ) : (
+              <ReactMarkdown
+                className="prose prose-sm dark:prose-invert max-w-none"
+                components={{
+                  // Ensure code blocks are properly styled
+                  pre: ({ node, ...props }) => (
+                    <pre className="bg-muted-foreground/10 p-2 rounded-lg overflow-x-auto">
+                      {props.children}
+                    </pre>
+                  ),
+                  // Style inline code
+                  code: ({ node, ...props }) => (
+                    <code className="bg-muted-foreground/10 rounded px-1">
+                      {props.children}
+                    </code>
+                  ),
+                }}
+              >
+                {message.content}
+              </ReactMarkdown>
+            )}
           </div>
         </div>
       ))}

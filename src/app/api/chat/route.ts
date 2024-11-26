@@ -5,6 +5,12 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Helper function to clean the text while preserving markdown
+function cleanResponse(text: string): string {
+  // Remove citations like 【4:0†source】 but preserve markdown
+  return text.replace(/【[^】]+】/g, "").trim();
+}
+
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
@@ -49,13 +55,15 @@ export async function POST(req: Request) {
         if (lastMessage.role === "assistant") {
           const content = lastMessage.content[0];
           if (content.type === "text") {
-            // Split the message into words and stream each chunk
-            const words = content.text.value.split(" ");
+            // Clean the response but keep markdown intact
+            const cleanedText = cleanResponse(content.text.value);
+            const words = cleanedText.split(" ");
+
             for (const word of words) {
               const chunk = new TextEncoder().encode(word + " ");
               controller.enqueue(chunk);
               // Add a small delay between words for a more natural effect
-              await new Promise((resolve) => setTimeout(resolve, 50));
+              await new Promise((resolve) => setTimeout(resolve, 20)); // Reduced delay for better markdown rendering
             }
           }
         }
@@ -66,7 +74,7 @@ export async function POST(req: Request) {
 
     return new Response(stream, {
       headers: {
-        "Content-Type": "text/plain; charset=utf-8",
+        "Content-Type": "text/markdown; charset=utf-8",
       },
     });
   } catch (error) {
