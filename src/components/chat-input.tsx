@@ -55,7 +55,7 @@ export function ChatInput() {
       }
     } catch (error) {
       console.error("Error:", error);
-      updateLastMessage("Sorry, there was an error processing your request.");
+      updateLastMessage("Oj, något gick fel. Försök igen senare.");
     } finally {
       setIsLoading(false);
       setTyping(false);
@@ -67,7 +67,7 @@ export function ChatInput() {
       <Input
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Type your message..."
+        placeholder="Ställ en fråga..."
         className="flex-1"
         disabled={isLoading}
       />
