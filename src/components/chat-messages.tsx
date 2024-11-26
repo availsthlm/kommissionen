@@ -1,9 +1,7 @@
 import { useChatStore } from "@/lib/store";
-import { type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import { TypingIndicator } from "./typing-indicator";
 import { WelcomeScreen } from "./welcome-screen";
-
 interface MessageProps {
   content: string;
 }
@@ -29,15 +27,17 @@ function AssistantMessage({ content }: MessageProps) {
         <ReactMarkdown
           className="prose prose-sm dark:prose-invert max-w-none"
           components={{
-            pre: ({ children }: { children: ReactNode }) => (
-              <pre className="bg-muted-foreground/10 p-2 rounded-lg overflow-x-auto">
-                {children}
-              </pre>
+            pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
+              <pre
+                className="bg-muted-foreground/10 p-2 rounded-lg overflow-x-auto"
+                {...props}
+              />
             ),
-            code: ({ children }: { children: ReactNode }) => (
-              <code className="bg-muted-foreground/10 rounded px-1">
-                {children}
-              </code>
+            code: (props) => (
+              <code
+                className="bg-muted-foreground/10 rounded px-1"
+                {...props}
+              />
             ),
           }}
         >
