@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useChatStore } from "@/lib/store";
+import { track } from "@vercel/analytics";
 import { SendHorizontal } from "lucide-react";
 import { useState } from "react";
 
@@ -14,6 +15,9 @@ export function ChatInput() {
     if (!input.trim() || isLoading) return;
 
     const message = input.trim();
+    track("query", {
+      value: message,
+    });
     setInput("");
     setIsLoading(true);
     setTyping(true);
