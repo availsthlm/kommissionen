@@ -31,6 +31,10 @@ export default function Home() {
               <div className="border-t p-3 sm:p-4">
                 <ChatInput />
               </div>
+              <p className="px-2 text-center text-xs leading-normal text-muted-foreground sm:block">
+                Det här är en AI-tjänst, såna kan ha fel. Överväg att
+                kontrollera viktig information.
+              </p>
             </div>
           )}
         </Card>
