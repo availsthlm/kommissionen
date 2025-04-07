@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AI kommissionen GPT",
-  description: "Frågor och svar om AI kommissionen",
+  title: "Nationella provet - biologi",
+  description: "Frågor och svar om nationella provet",
 };
 
 export default function RootLayout({
