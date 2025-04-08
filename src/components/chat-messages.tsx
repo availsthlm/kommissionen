@@ -1,6 +1,6 @@
 import { useChatStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { WelcomeScreen } from "./welcome-screen";
 
@@ -36,6 +36,11 @@ function StatusMessage({ message }: { message: string }) {
 export function ChatMessages() {
   const messages = useChatStore((state) => state.messages);
   const statusMessage = useChatStore((state) => state.statusMessage);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, statusMessage]);
 
   if (messages.length === 0) {
     return <WelcomeScreen />;
@@ -49,7 +54,7 @@ export function ChatMessages() {
             key={message.id ?? i}
             className={cn(
               "flex w-full gap-3 rounded-lg px-4 py-4",
-              message.role === "assistant" && "bg-secondary"
+              message.role === "assistant" ? "bg-secondary" : "bg-slate-100"
             )}
           >
             <div className="flex-1 justify-center overflow-hidden">
@@ -66,6 +71,7 @@ export function ChatMessages() {
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );
