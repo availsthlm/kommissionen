@@ -11,7 +11,7 @@ export default function Home() {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="min-h-screen bg-background bg-[url('/background.png')] bg-cover bg-center bg-no-repeat bg-fixed">
+    <div className="min-h-screen bg-background bg-[url('/background_1.png')] bg-cover bg-center bg-no-repeat bg-fixed">
       <div className="mx-auto w-full max-w-[90%] sm:max-w-[600px] md:max-w-[700px] lg:max-w-[800px] xl:max-w-[900px] h-screen flex flex-col px-2 py-4">
         <Card className="flex h-full flex-col gap-1 bg-background/90 backdrop-blur-sm">
           {hasMessages ? (
