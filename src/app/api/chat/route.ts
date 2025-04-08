@@ -24,24 +24,26 @@ export async function POST(req: Request) {
 
     // Function to send a status message that can be updated by the client
     const sendStatusMessage = async (status: string) => {
-      await writer.write(encoder.encode(`STATUS: ${status}\n`));
+      // Make sure the status message is clearly separated from other content
+      await writer.write(encoder.encode(`STATUS:${status}\n`));
     };
 
     // Start processing in the background
     (async () => {
       try {
-        await sendStatusMessage("Initializing");
+        // First send a test status to ensure client is receiving these messages
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
         const thread = await openai.beta.threads.create();
 
         // Add the message to the thread
-        await sendStatusMessage("Processing your query");
+        await sendStatusMessage("Bearbetar din fråga");
         await openai.beta.threads.messages.create(thread.id, {
           role: "user",
           content: message,
         });
 
         // Run the assistant
-        await sendStatusMessage("Starting assistant");
         const run = await openai.beta.threads.runs.create(thread.id, {
           assistant_id: process.env.ASSISTANT_ID!,
         });
@@ -64,11 +66,11 @@ export async function POST(req: Request) {
           // Update status message periodically
           if (retries % 3 === 0) {
             const statusMessages = [
-              "Searching for sources",
-              "Processing information",
-              "Analyzing data",
-              "Preparing response",
-              "Still thinking",
+              "Söker efter källor",
+              "Bearbetar information",
+              "Analyserar data",
+              "Förbereder svar",
+              "Tänker fortfarande",
             ];
             const messageIndex =
               Math.floor(retries / 3) % statusMessages.length;
@@ -97,6 +99,7 @@ export async function POST(req: Request) {
           const content = lastMessage.content[0];
           if (content.type === "text") {
             // Signal that we're done with status updates and starting content
+            // Add a clearly separated marker to ensure client catches it
             await writer.write(encoder.encode("DONE\n"));
 
             const cleanedText = cleanResponse(content.text.value);
@@ -125,7 +128,9 @@ export async function POST(req: Request) {
     // Return the stream immediately while processing continues in the background
     return new Response(stream.readable, {
       headers: {
-        "Content-Type": "text/markdown; charset=utf-8",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
       },
     });
   } catch (error) {

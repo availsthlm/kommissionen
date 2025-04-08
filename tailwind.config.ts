@@ -1,4 +1,6 @@
+import typography from "@tailwindcss/typography";
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -56,7 +58,87 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "none",
+            color: "inherit",
+            a: {
+              color: "inherit",
+              textDecoration: "underline",
+              fontWeight: "500",
+            },
+            '[class~="lead"]': {
+              color: "inherit",
+            },
+            strong: {
+              color: "inherit",
+            },
+            'ol[type="A"]': {
+              listStyleType: "upper-alpha",
+            },
+            'ol[type="a"]': {
+              listStyleType: "lower-alpha",
+            },
+            'ol[type="A" s]': {
+              listStyleType: "upper-alpha",
+            },
+            'ol[type="a" s]': {
+              listStyleType: "lower-alpha",
+            },
+            'ol[type="I"]': {
+              listStyleType: "upper-roman",
+            },
+            'ol[type="i"]': {
+              listStyleType: "lower-roman",
+            },
+            'ol[type="I" s]': {
+              listStyleType: "upper-roman",
+            },
+            'ol[type="i" s]': {
+              listStyleType: "lower-roman",
+            },
+            'ol[type="1"]': {
+              listStyleType: "decimal",
+            },
+            h1: {
+              color: "inherit",
+            },
+            h2: {
+              color: "inherit",
+            },
+            h3: {
+              color: "inherit",
+            },
+            h4: {
+              color: "inherit",
+            },
+            blockquote: {
+              color: "inherit",
+              borderLeftColor: "inherit",
+            },
+            code: {
+              color: "inherit",
+              backgroundColor: "hsl(var(--muted))",
+              borderRadius: "0.25rem",
+              padding: "0.2em 0.4em",
+            },
+            "code::before": {
+              content: '""',
+            },
+            "code::after": {
+              content: '""',
+            },
+            pre: {
+              backgroundColor: "hsl(var(--muted))",
+              color: "inherit",
+              borderRadius: "0.5rem",
+              padding: "1rem",
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
+  plugins: [typography, animate],
 } satisfies Config;
