@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { create } from "zustand";
 
-interface Message {
+export interface Message {
   id?: string;
   role: "user" | "assistant";
   content: string;
