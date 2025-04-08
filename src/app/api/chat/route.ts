@@ -5,6 +5,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+export const maxDuration = 30;
+export const runtime = "edge";
+
 // Helper function to clean the text while preserving markdown
 function cleanResponse(text: string): string {
   // Remove citations like 【4:0†source】 but preserve markdown
